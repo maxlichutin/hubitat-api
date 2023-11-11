@@ -38,6 +38,25 @@ async function getDevices() {
     return error;
   }
 }
+async function sendCommand(deviceId, command, secondaryValue) {
+  secondaryValue = secondaryValue ? `/${secondaryValue}` : "";
+
+  let url = `http://10.0.1.250/apps/api/7/devices/${deviceId}/${command}${secondaryValue}?access_token=${process.env.HUBITAT_KEY}`;
+
+  try {
+    let headers = {
+      headers: {},
+    };
+    let response = await axios.get(url, headers).then((response) => {
+      return response.data;
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    return error;
+  }
+}
 
 export { getRooms as getRooms };
 export { getDevices as getDevices };
+export { sendCommand as sendCommand };

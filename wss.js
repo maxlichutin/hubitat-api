@@ -10,7 +10,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
 import { generateAccessToken, verifyAccessToken } from "./jwt.js";
-import { getRooms, getDevices } from "./hubitat.js";
+import { getRooms, getDevices, sendCommand } from "./hubitat.js";
 
 async function initNewConnection(ws, req) {
   // JWT
@@ -61,7 +61,6 @@ function startWSS() {
   });
 }
 
-
 // BROADCAST
 async function broadcast(data, includeSelf, self) {
   includeSelf = includeSelf || false;
@@ -84,15 +83,15 @@ async function sendToClient(data, client) {
 // INCOMING MESSAGE FROM ANY CLIENT
 async function incomingMessage(data, sender) {
   let payload = JSON.parse(data);
-
-  // do something with data....
-  // ...
-  console.log(payload);
+  let deviceId = payload.id;
+  let command = payload.command;
+  let secondaryValue = payload.secondaryValue || "";
+  await sendCommand(deviceId, command, secondaryValue);
 }
 
 // CLIENT DISCONECTED
 async function clientDropped(data) {
-//   console.log(`Client disconnected.`);
+  //   console.log(`Client disconnected.`);
 }
 
 export { startWSS as startWSS };
