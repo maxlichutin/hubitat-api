@@ -7,8 +7,8 @@ import dotenv from "dotenv";
 app.use(cors());
 dotenv.config({ path: "./.env" });
 
-import {startWSS, broadcast} from "./wss.js";
-import {startHeartbeat} from "./heartbeat.js";
+import { startWSS, broadcast } from "./wss.js";
+import { startHeartbeat } from "./heartbeat.js";
 import { generateAccessToken, verifyAccessToken } from "./jwt.js";
 
 // START WS
@@ -28,7 +28,7 @@ router.post("/device-status", cors(), function (req, res) {
     messageType: "hubitatUpdate",
     data: body,
   };
-  broadcast(data)
+  broadcast(data);
 });
 
 // GET ACCESS
@@ -50,22 +50,6 @@ router.post("/get-access", cors(), function (req, res) {
     res.status(400).send(result);
   }
 });
-
-
-// // STATIC HTML
-// router.get("/static", function (req, res) {
-//   res.sendFile(path.join(__dirname + "/static.html"));
-// });
-
-// // REGEX "/butterfly" and "/dragonfly"
-// router.get(/.*fly$/, (req, res) => {
-//     res.send(req.url)
-// })
-
-// // ROUTER PARAMS
-// router.get('/users/:userId/books/:bookId', (req, res) => {
-//     res.send(req.params)
-// })
 
 // Add JSON support for POST requests (req.body, etc)
 app.use(express.json());
