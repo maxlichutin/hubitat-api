@@ -40,12 +40,14 @@ router.post("/get-access", cors(), function (req, res) {
   if (process.env.PIN === body.pin) {
     let result = {
       status: "success",
+      message: "Access granted successfully.",
       jwt: generateAccessToken(headers.origin),
     };
     res.status(200).send(result);
   } else {
     let result = {
       status: "error",
+      message: "Invalid PIN. Please provide a valid PIN.",
     };
     res.status(400).send(result);
   }
