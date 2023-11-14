@@ -3,7 +3,7 @@ import axios from "axios";
 dotenv.config({ path: "./.env" });
 
 async function getRooms() {
-  let url = `http://10.0.1.250/apps/api/7/devices/all?access_token=${process.env.HUBITAT_KEY}`;
+  let url = `${process.env.HUBITAT_API}/devices/all?access_token=${process.env.HUBITAT_KEY}`;
   try {
     let headers = {
       headers: {},
@@ -25,7 +25,7 @@ async function getRooms() {
 }
 
 async function getDevices() {
-  let url = `http://10.0.1.250/apps/api/7/devices/all?access_token=${process.env.HUBITAT_KEY}`;
+  let url = `${process.env.HUBITAT_API}/devices/all?access_token=${process.env.HUBITAT_KEY}`;
   try {
     let headers = {
       headers: {},
@@ -41,7 +41,7 @@ async function getDevices() {
 async function sendCommand(deviceId, command, secondaryValue) {
   secondaryValue = secondaryValue ? `/${secondaryValue}` : "";
 
-  let url = `http://10.0.1.250/apps/api/7/devices/${deviceId}/${command}${secondaryValue}?access_token=${process.env.HUBITAT_KEY}`;
+  let url = `${process.env.HUBITAT_API}/devices/${deviceId}/${command}${secondaryValue}?access_token=${process.env.HUBITAT_KEY}`;
 
   try {
     let headers = {

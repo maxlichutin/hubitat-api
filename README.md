@@ -15,6 +15,7 @@ WS_PORT=
 PIN=
 JWT_SECRET=
 HUBITAT_KEY = 
+HUBITAT_API =
 ```
 ### Your Hubitat should POST device events to
 ``` http://SERVER_IP:HTTP_PORT/device-status```
