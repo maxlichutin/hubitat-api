@@ -88,3 +88,16 @@ ws.send({
     secondaryValue: {optional},
 })
 ```
+
+
+### COPY to Ubuntu
+```
+scp -r  ~/Documents/github/hubitat-api/* ubuntu@10.0.1.38:/var/www/hubitat-api
+```
+
+## START PROCESS MANAGER FOR NODE.JS
+https://pm2.keymetrics.io
+```
+sudo pm2 start index.js 
+```
+
