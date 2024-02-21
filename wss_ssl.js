@@ -10,14 +10,13 @@ const options = {
 
 /*
 TODO:
-Every time, certbot, but renew the certificate express (both WS and POST) needs to be restarted. Follow the tutorial here:
+Every time certbot renews the certificate, express (both WS and POST) needs to be restarted with new cert files. Follow the tutorial here:
 https://stackoverflow.com/questions/63325281/how-to-automatically-reload-updated-ssl-certificates-in-node-js-application
 
 It should look something like this :
 fs.watch(sslKeyPath, () => {
   server.setSecureContext(options); // or options() as a function
 })
-
  */
 
 const server = https.createServer(options, app);

@@ -1,9 +1,10 @@
 import { HikvisionAlerts, HikvisionStream } from "./hikvision.js";
+// import { broadcast } from "./wss.js";
 import { broadcast } from "./wss_ssl.js";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
-async function broadcastLive(ip, resolution) {
+async function liveVideo(ip, resolution) {
   const options = {
     ip: ip,
     port: 554,
@@ -23,4 +24,31 @@ async function broadcastLive(ip, resolution) {
   });
 }
 
-export { broadcastLive as broadcastLive };
+async function alerts(ip, label) {
+  const options = {
+    label: label.toLower() || ip,
+    ip: ip,
+    port: 80,
+    user: process.env.CAM_USER,
+    pass: process.env.CAM_PASS,
+  };
+
+  let ipCamAlerts = new HikvisionAlerts(options);
+  ipCamAlerts.alertStream.on("statusChange", function (data) {
+    let payload = JSON.stringify({
+      messageType: `hikvision-status-${label}`,
+      data: data,
+    });
+    broadcast(payload);
+  });
+
+  ipCamAlerts.alertStream.on("alert", function (data) {
+    let payload = JSON.stringify({
+      messageType: `hikvision-alert-${label}`,
+      data: data,
+    });
+  });
+}
+
+export { liveVideo as liveVideo };
+export { alerts as alerts };
