@@ -26,7 +26,7 @@ async function liveVideo(ip, resolution) {
 
 async function alerts(ip, label) {
   const options = {
-    label: label.toLower() || ip,
+    label: label.toLowerCase() || ip,
     ip: ip,
     port: 80,
     user: process.env.CAM_USER,
