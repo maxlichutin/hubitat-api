@@ -1,6 +1,6 @@
 import net from "net";
 import events from "events";
-import {parseString} from "xml2js";
+import { parseString } from "xml2js";
 import rtsp from "rtsp-ffmpeg";
 
 /// *** ALERTS ***
@@ -18,7 +18,7 @@ class HikvisionAlerts {
         let now = new Date();
         let differenceMs = now - this.lastheartbeat;
         let online = differenceMs < this.healthIntervalMs * 2 ? true : false; // considered offline if last two hartbeats were missed
-        let status = online ? "online" : "offline";
+        let status = online ? "Online" : "Offline";
         if (this.cameraOnline !== online) {
           this.alertStream.emit("statusChange", {
             ip: options.ip,
@@ -61,7 +61,7 @@ class HikvisionAlerts {
         this.alertStream.emit("statusChange", {
           ip: options.ip,
           label: options.label,
-          status: "disconected",
+          status: "Disconected",
         });
         // reconnect
         try {
@@ -70,23 +70,31 @@ class HikvisionAlerts {
             this.alertStream.emit("statusChange", {
               ip: options.ip,
               label: options.label,
-              status: "reconnecting",
+              status: "Reconnecting",
             });
           }, 10000);
         } catch (error) {
           this.alertStream.emit("statusChange", {
             ip: options.ip,
             label: options.label,
-            status: "failedToReconnect",
+            status: "Failed to reconnect",
           });
         }
+      });
+
+      client.on("connect", () => {
+        this.alertStream.emit("statusChange", {
+          ip: options.ip,
+          label: options.label,
+          status: "Connected",
+        });
       });
 
       client.on("error", () => {
         this.alertStream.emit("statusChange", {
           ip: options.ip,
           label: options.label,
-          status: "connectionError",
+          status: "Connection error",
         });
       });
 
@@ -178,7 +186,12 @@ class HikvisionStream {
         this.alertStream.emit("data", chunk);
       });
     };
-    this.client = this.connect(options);
+    try {
+      this.client = this.connect(options);
+    } catch (error) {
+      this.alertStream.emit("error", error);
+      console.log("error", error);
+    }
   }
 }
 

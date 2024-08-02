@@ -1,12 +1,22 @@
 # hubitat-api
-Communicate with Hubitat Elevation via WebSocket. https://hubitat.com
+Communicate with Hubitat Elevation, Hikvision, and Sonos via WebSocket. 
+
+https://hubitat.com
 
 ## Features: 
+HUBITAT
     - Get device status 
     - Get rooms 
     - Live status update over WS
     - Control devices over WS
     - Heartbeat monitor
+
+HIKVISION
+    - liveVideo
+    - Event Alerts
+
+ SONOS
+    - TBD 
 
 ### Set your pin, key and ports in .ENV 
 ```
@@ -17,7 +27,7 @@ JWT_SECRET=
 HUBITAT_KEY = 
 HUBITAT_API =
 ```
-### Your Hubitat should POST device events to
+### Your Hubitat Hub should POST device events to:
 ``` http://SERVER_IP:HTTP_PORT/device-status```
 
 ### Use this endpoint to exchnage your pin for a JWT.
@@ -25,10 +35,10 @@ HUBITAT_API =
 POST /get-access
 ```
 Body
-pin (integer, required)
+pin (Integer, Required)
 ```
 {
-  "pin": 1234
+  "pin": Number
 }
 ```
 
@@ -51,6 +61,7 @@ Content Type: application/json
   "status": "error",
   "message": "Invalid PIN. Please provide a valid PIN."
 }
+
 ```
 ### Start new WS connection using your JWT
 ```ws://SERVER_IP:WS_PORT?token=JWT```
@@ -100,4 +111,15 @@ https://pm2.keymetrics.io
 ```
 sudo pm2 start index.js 
 ```
+```
+sudo pm2 status
+```
 
+
+## TEST FFMPEG ON SERVER
+```
+ffmpeg -i "rtsp://${ip}:554/ISAPI/streaming/channels/101?auth=${auth}" -s 640x480 "out.jpg"
+
+ffprobe -show_streams -i "rtsp://${ip}:554/ISAPI/streaming/channels/101?auth=${auth}" -print_format "json"
+
+```

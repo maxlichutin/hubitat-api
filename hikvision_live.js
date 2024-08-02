@@ -4,7 +4,10 @@ import { broadcast } from "./wss_ssl.js";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
-async function liveVideo(ip, resolution) {
+async function liveVideo(ip, resolution, nthFrame) {
+  nthFrame = nthFrame || 10;
+  let frameNum = 0;
+
   const options = {
     ip: ip,
     port: 554,
@@ -16,17 +19,26 @@ async function liveVideo(ip, resolution) {
 
   let ipCamRtsp = new HikvisionStream(options);
   ipCamRtsp.alertStream.on("data", function (chunk) {
-    let payload = JSON.stringify({
-      messageType: `live-video-${ip}`,
-      data: chunk.toString("base64"),
-    });
-    broadcast(payload);
+    frameNum++;
+    if (frameNum === nthFrame) {
+      let payload = JSON.stringify({
+        messageType: `hikvisionLiveVideoFrame`,
+        data: {
+          ip: ip,
+          data: chunk.toString("base64"),
+        },
+      });
+      broadcast(payload);
+      frameNum = 0;
+    }
   });
 }
 
 async function alerts(ip, label) {
+  label = label.toLowerCase() || ip;
+
   const options = {
-    label: label.toLowerCase() || ip,
+    label: label,
     ip: ip,
     port: 80,
     user: process.env.CAM_USER,
@@ -36,17 +48,24 @@ async function alerts(ip, label) {
   let ipCamAlerts = new HikvisionAlerts(options);
   ipCamAlerts.alertStream.on("statusChange", function (data) {
     let payload = JSON.stringify({
-      messageType: `hikvision-status-${label}`,
-      data: data,
+      messageType: `hikvisionStatus`,
+      data: {
+        ip: ip,
+        data: data,
+      },
     });
     broadcast(payload);
   });
 
   ipCamAlerts.alertStream.on("alert", function (data) {
     let payload = JSON.stringify({
-      messageType: `hikvision-alert-${label}`,
-      data: data,
+      messageType: `hikvisionAlert`,
+      data: {
+        ip: ip,
+        data: data,
+      },
     });
+    broadcast(payload);
   });
 }
 
