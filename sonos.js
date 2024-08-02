@@ -43,10 +43,12 @@ function startSonos() {
       });
       group.state.playState = data;
 
-      broadcast({
-        messageType: `sonos`,
-        data: cashedState,
-      });
+      broadcast(
+        JSON.stringify({
+          messageType: `sonos`,
+          data: cashedState,
+        })
+      );
     });
 
     device.on("Volume", (data) => {
@@ -54,10 +56,12 @@ function startSonos() {
         return obj.host === device.host;
       });
       group.state.volume = data;
-      broadcast({
-        messageType: `sonos`,
-        data: cashedState,
-      });
+      broadcast(
+        JSON.stringify({
+          messageType: `sonos`,
+          data: cashedState,
+        })
+      );
     });
 
     device.on("CurrentTrack", (data) => {
@@ -74,10 +78,12 @@ function startSonos() {
         queuePosition: data.queuePosition,
       };
       group.state.track = track;
-      broadcast({
-        messageType: `sonos`,
-        data: cashedState,
-      });
+      broadcast(
+        JSON.stringify({
+          messageType: `sonos`,
+          data: cashedState,
+        })
+      );
     });
   });
 }
